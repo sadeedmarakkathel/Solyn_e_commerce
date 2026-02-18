@@ -1,0 +1,91 @@
+{% extends "dashboard/base.html" %}
+
+{% block dashboard_content %}
+<h1 style="margin-bottom: 2rem; font-weight: 800;">Dashboard Overview</h1>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value">{{ total_orders }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value">${{ total_revenue }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total Products</div>
+        <div class="stat-value">{{ total_products }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total Customers</div>
+        <div class="stat-value">{{ total_users }}</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+    <!-- Recent Orders -->
+    <div class="dashboard-card">
+        <h3>Recent Orders</h3>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.user.get_full_name|default:order.user.username }}</td>
+                    <td>
+                        <span class="status-badge 
+                            {% if order.shipping_status == 'Delivered' %}status-delivered
+                            {% elif order.shipping_status == 'Processing' %}status-processing
+                            {% else %}status-shipped{% endif %}">
+                            {{ order.shipping_status }}
+                        </span>
+                    </td>
+                    <td>${{ order.total_amount }}</td>
+                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style="margin-top: 20px; text-align: right;">
+            <a href="{% url 'dashboard:orders' %}" style="color: #000; font-weight: 700; font-size: 0.9rem;">View All Orders →</a>
+        </div>
+    </div>
+
+    <!-- Inventory Alerts -->
+    <div class="dashboard-card">
+        <h3>Low Stock Alerts</h3>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            {% for product in low_stock %}
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid #f4f7f6;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; background: #fafafa; border-radius: 6px; overflow: hidden; border: 1px solid #eee;">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.9rem;">{{ product.name }}</div>
+                        <div style="font-size: 0.8rem; color: #718096;">SKU: {{ product.id }}</div>
+                    </div>
+                </div>
+                <div style="font-weight: 700; color: #E53E3E;">{{ product.inventory }} left</div>
+            </div>
+            {% empty %}
+            <p style="color: #718096; font-size: 0.9rem;">All products well stocked.</p>
+            {% endfor %}
+        </div>
+        <div style="margin-top: 20px; text-align: right;">
+            <a href="{% url 'dashboard:products' %}" style="color: #000; font-weight: 700; font-size: 0.9rem;">Manage Products →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

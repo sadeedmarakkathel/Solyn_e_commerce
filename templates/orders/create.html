@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container" style="display: flex; gap: 40px; justify-content: space-between;">
+    <div class="order-info" style="flex: 1; background: #f9f9f9; padding: 20px; border-radius: 8px;">
+        <h3>Your Order Summary</h3>
+        <ul style="list-style: none; padding: 0;">
+            {% for item in cart %}
+            <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0;">
+                <span>{{ item.quantity }}x {{ item.product.name }}</span>
+                <span>${{ item.total_price }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <p style="font-weight: bold; font-size: 1.2rem; text-align: right; margin-top: 10px;">Total: ${{ cart.get_total_price }}</p>
+    </div>
+    <div class="checkout-form" style="flex: 1.5;">
+        <h2>Order Details</h2>
+        <form action="." method="post" class="order-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p><input type="submit" value="Place Order" class="btn" style="padding: 10px 20px; background: #000; color: #fff; border: none; cursor: pointer; margin-top: 20px; width: 100%;"></p>
+        </form>
+    </div>
+</div>
+{% endblock %}

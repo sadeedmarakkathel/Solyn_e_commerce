@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover SOLYN, your destination for premium footwear. Shop our curated collection of handcrafted shoes designed for style and comfort.">
+    <title>{% block title %}SOLYN | Premium Footwear Collection{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header>
+        <div class="nav_container">
+            <nav>
+                <div class="logo"><a href="{% url 'home' %}">SOLYN</a></div>
+                
+
+                
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'products:products' %}">All Products</a></li>
+                
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'users:profile' %}">Profile</a></li>
+                    <li><a href="{% url 'orders:orders' %}">View Orders</a></li>
+                    {% if user.is_superuser %}
+                    <li><a href="{% url 'dashboard:home' %}" style="color: var(--accent-color); font-weight: 700;">Dashboard</a></li>
+                    {% endif %}
+                    {% else %}
+                    <li><a href="{% url 'users:login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+
+                <div class="nav-icons">
+                    <a href="{% url 'cart:cart' %}" class="cart-icon">
+                        🛒
+                        {% if cart %}
+                           <span class="cart-badge">{{ cart|length }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+
+            </nav>
+
+            {% if messages %}
+            <div class="toast-messages">
+                {% for message in messages %}
+                    <div class="toast-message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h2>SOLYN</h2>
+                    <p>Redefining everyday footwear with style, comfort, and sustainable quality. Walk your path with confidence.</p>
+                </div>
+                <div class="footer-col">
+                    <h4 style="margin-bottom: 0.5rem; color: #fff;">🚚 Free Shipping</h4>
+                    <p style="color: #A0AEC0;">On all orders over $50</p>
+                </div>
+                <div class="footer-col">
+                    <h4 style="margin-bottom: 0.5rem; color: #fff;">↺ 30-Day Returns</h4>
+                    <p style="color: #A0AEC0;">Easy returns on all orders</p>
+                </div>
+                <div class="footer-col">
+                    <h4 style="margin-bottom: 0.5rem; color: #fff;">✨ Unique Styles</h4>
+                    <p style="color: #A0AEC0;">Handcrafted with care</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} SOLYN Footwear. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

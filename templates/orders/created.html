@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmed - SOLYN{% endblock %}
+
+{% block content %}
+<div class="container section-padding">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+        <h1 class="section-title">Thank you for your order!</h1>
+        <p style="font-size: 1.1rem; color: #718096;">Your order <strong>#{{ order.id }}</strong> has been placed successfully.</p>
+    </div>
+
+    <div class="checkout-layout" style="max-width: 800px; margin: 0 auto; display: block;">
+        <div class="order-summary-card" style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                <h3 style="margin: 0;">Order Summary</h3>
+                <span style="font-weight: 600; color: #4A5568;">{{ order.created_at|date:"F j, Y" }}</span>
+            </div>
+
+            <div class="summary-items">
+                {% for item in order.items.all %}
+                <div class="summary-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #edf2f7;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                        {% endif %}
+                        <div>
+                            <div style="font-weight: 600; color: #2d3748;">{{ item.product.name }}</div>
+                            <div style="font-size: 0.85rem; color: #718096;">Qty: {{ item.quantity }} × ${{ item.price }}</div>
+                        </div>
+                    </div>
+                    <span style="font-weight: 600; color: #2d3748;">${{ item.get_total_price }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="summary-totals" style="margin-top: 1.5rem; background: #f8fafc; padding: 20px; border-radius: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #4a5568;">
+                    <span>Payment Method</span>
+                    <span style="font-weight: 600;">{{ order.get_payment_method_display }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0; font-size: 1.25rem; font-weight: 700; color: #1a202c;">
+                    <span>Total Amount</span>
+                    <span style="color: var(--primary);">${{ order.total_amount }}</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 12px;">
+                <a href="{% url 'orders:orders' %}" class="btn btn-primary btn-full" style="text-align: center;">View Order History</a>
+                <a href="{% url 'home' %}" style="text-align: center; color: #718096; text-decoration: none; font-size: 0.9rem;">Return to Homepage</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

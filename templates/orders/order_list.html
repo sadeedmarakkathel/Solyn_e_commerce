@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Orders - SOLYN{% endblock %}
+
+{% block content %}
+<div class="container section-padding">
+    <div style="margin-bottom: 2rem;">
+        <h1 class="section-title" style="margin-bottom: 0; text-align: left;">My Orders</h1>
+    </div>
+    
+    {% if orders %}
+    <div class="orders-container" style="display: flex; flex-direction: column; gap: 2rem;">
+        {% for order in orders %}
+        <div class="order-card-premium" style="background: #fff; border-radius: 20px; box-shadow: var(--shadow-md); padding: 30px; display: grid; grid-template-columns: 120px 2fr 1fr 1.5fr; gap: 40px; align-items: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+            
+            <!-- Product Preview -->
+            {% with first_item=order.items.first %}
+            <div class="item-img-container" style="width: 120px; height: 120px; border-radius: 15px; overflow: hidden; background: #f8fafc; border: 1px solid #f0f0f0;">
+                {% if first_item.product.image %}
+                    <img src="{{ first_item.product.image.url }}" alt="{{ first_item.product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #cbd5e0; font-size: 2rem;">📦</div>
+                {% endif %}
+            </div>
+            
+            <!-- Details -->
+            <div class="order-details">
+                <div style="font-size: 1.25rem; font-weight: 800; color: #000; margin-bottom: 8px;">
+                    Order #{{ order.id }}
+                </div>
+                <div style="color: #718096; font-size: 0.95rem; margin-bottom: 12px; font-weight: 500;">
+                    Placed on {{ order.created_at|date:"M d, Y" }}
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    {% for item in order.items.all %}
+                        <span style="background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; color: #475569;">{{ item.product.name }} × {{ item.quantity }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endwith %}
+
+            <!-- Value -->
+            <div class="order-total-val" style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #a0aec0; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 5px;">Total</div>
+                <div style="font-size: 1.4rem; font-weight: 900; color: #000;">${{ order.total_amount }}</div>
+            </div>
+
+            <!-- Status & Actions -->
+            <div class="order-action-section" style="display: flex; flex-direction: column; gap: 15px; align-items: stretch;">
+                {% if order.shipping_status == 'Delivered' %}
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 10px; background: #ccf6e4;">
+                        <span style="font-weight: 800; font-size: 0.8rem; color: #1a7f52; text-transform: uppercase; letter-spacing: 1px;">DELIVERED</span>
+                    </div>
+                {% elif order.shipping_status == 'Cancelled' %}
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 10px; background: #fed7d7;">
+                        <span style="font-weight: 800; font-size: 0.8rem; color: #c53030; text-transform: uppercase; letter-spacing: 1px;">CANCELLED</span>
+                    </div>
+                {% else %}
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 10px; background: #e0e7ff;">
+                        <span style="font-weight: 800; font-size: 0.8rem; color: #4c51bf; text-transform: uppercase; letter-spacing: 1px;">{{ order.shipping_status|upper }}</span>
+                    </div>
+                {% endif %}
+                <div style="display: flex; gap: 10px; width: 100%;">
+                    <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-primary" style="padding: 12px; font-size: 0.85rem; border-radius: 10px; flex: 1;">Track Order</a>
+                    {% if order.status != 'cancelled' and order.shipping_status != 'Delivered' and order.shipping_status != 'Shipped' %}
+                        <a href="{% url 'orders:cancel_order' order.id %}" class="btn btn-secondary-hero" style="padding: 12px; font-size: 0.85rem; border-radius: 10px; flex: 1; border-color: #e53e3e; color: #e53e3e;" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div style="text-align: center; padding: 100px 40px; background: #fff; border-radius: 20px; box-shadow: var(--shadow-md); max-width: 600px; margin: 0 auto;">
+        <div style="font-size: 4rem; margin-bottom: 20px;">📦</div>
+        <h2 style="font-weight: 900; margin-bottom: 15px;">No orders found</h2>
+        <p style="color: #718096; margin-bottom: 30px;">You haven't placed any orders with us yet. Let's find something you love!</p>
+        <a href="{% url 'products:products' %}" class="btn btn-primary">Browse Collections</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .order-card-premium:hover {
+        transform: scale(1.02);
+        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.1);
+    }
+    @media (max-width: 1024px) {
+        .order-card-premium { grid-template-columns: 120px 1fr 1fr; }
+        .order-action-section { grid-column: span 3; flex-direction: row; align-items: center; justify-content: space-between; border-top: 1px solid #f0f0f0; padding-top: 20px; }
+    }
+    @media (max-width: 768px) {
+        .order-card-premium { grid-template-columns: 1fr; text-align: center; }
+        .item-img-container { margin: 0 auto; }
+        .order-action-section { flex-direction: column; }
+    }
+</style>
+{% endblock %}

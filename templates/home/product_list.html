@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="padding-top: 20px; padding-bottom: 80px;">
+    <h1 class="section-title">All Products</h1>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <div class="product-content-wrap">
+                <a href="{{ product.get_absolute_url }}">
+                    <div class="product-image-container">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% endif %}
+                    </div>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                </a>
+                <p class="product-price">${{ product.price }}</p>
+            </div>
+            
+            <div style="padding: 0 15px 20px;">
+                {% if product.inventory %}
+                    <form action="{% url 'cart:cart_add' product.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-full">Add to Cart</button>
+                    </form>
+                {% else %}
+                    <button class="btn btn-full" disabled style="background: #ccc; cursor: not-allowed;">Out of Stock</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container section-padding">
+    <div style="margin-bottom: 4rem;">
+        <span style="color: var(--accent-color); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">Collection</span>
+        <h1 class="section-title" style="text-align: left; margin-bottom: 0.5rem; letter-spacing: -1.5px;">{{ category.name }}</h1>
+        <p style="color: #718096; font-size: 1.1rem;">Refined selections for the modern individual</p>
+    </div>
+    
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <div class="product-content-wrap">
+                <a href="{{ product.get_absolute_url }}">
+                    <div class="product-image-container">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+                        {% endif %}
+                    </div>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                </a>
+                <p class="product-price">${{ product.price }}</p>
+            </div>
+            
+            <div style="padding: 0 15px 20px;">
+                {% if product.inventory %}
+                <form action="{% url 'cart:cart_add' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-full">Add to Cart</button>
+                </form>
+                {% else %}
+                <button class="btn btn-full" disabled style="background: #ccc; cursor: not-allowed">Out of Stock</button>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">
+            <p style="color: #718096; font-size: 1.2rem;">Our inventory for this collection is currently being refreshed.</p>
+            <a href="{% url 'products:products' %}" class="btn btn-black" style="margin-top: 20px;">Explore All Collections</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
