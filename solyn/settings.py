@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", "fallback_secret")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["https://solyn-e-commerce.onrender.com/"]
+ALLOWED_HOSTS = ["solyn-e-commerce.onrender.com/"]
 
 # Application definition
 
