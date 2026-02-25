@@ -55,7 +55,6 @@ def create_order(request):
 
             for item in cart:
                 product = Product.objects.select_for_update().get(id=item["product"].id)
-                # product = item["product"]
                 if product.inventory < item["quantity"]:
                     messages.error(request, f"Sorry, only {product.inventory} units of {product.name} are available.")
                     return redirect("cart:cart")
