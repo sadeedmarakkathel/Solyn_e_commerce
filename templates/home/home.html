@@ -53,7 +53,11 @@
                     <div class="product-content-wrap">
                         <a href="{{ product.get_absolute_url }}">
                             <div class="product-image-container">
-                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                {% else %}
+                                    <div style="height: 200px; background: #f7fafc; display: flex; align-items: center; justify-content: center; color: #a0aec0;">No Image</div>
+                                {% endif %}
                             </div>
                             <h3 class="product-name">{{ product.name }}</h3>
                         </a>
