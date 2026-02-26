@@ -59,13 +59,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'solyn.wsgi.application'
 
-# Database configuration using dj-database-url
+# Database configuration using individual env vars (avoids URL parsing issues)
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
-        conn_max_age=600,
-        ssl_require=True  # required by Supabase
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME', default='postgres'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+        'CONN_MAX_AGE': 600,
+    }
 }
 
 # Password validation
