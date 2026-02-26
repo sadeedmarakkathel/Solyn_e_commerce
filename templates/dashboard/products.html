@@ -3,7 +3,7 @@
 {% block dashboard_content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
     <h1 style="font-weight: 800; margin: 0;">Product Inventory</h1>
-    <a href="/admin/apps/products/product/add/" class="btn btn-primary" style="background: #000; border-radius: 6px; font-size: 0.9rem; padding: 10px 20px;">+ Add New Product</a>
+    <a href="/admin/products/product/add/" class="btn btn-primary" style="background: #000; border-radius: 6px; font-size: 0.9rem; padding: 10px 20px;">+ Add New Product</a>
 </div>
 
 <div class="dashboard-card">
@@ -47,7 +47,7 @@
                     </span>
                 </td>
                 <td>
-                    <a href="/admin/apps/products/product/{{ product.id }}/change/" style="color: #000; font-weight: 700; text-decoration: underline; font-size: 0.85rem;">Edit</a>
+                    <a href="/admin/products/product/{{ product.id }}/change/" style="color: #000; font-weight: 700; text-decoration: underline; font-size: 0.85rem;">Edit</a>
                 </td>
             </tr>
             {% empty %}
