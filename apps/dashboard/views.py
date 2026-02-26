@@ -57,3 +57,13 @@ def update_order_status(request, order_id):
             
         order.save()
     return redirect('dashboard:orders')
+
+@superuser_required
+def update_product_stock(request, product_id):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=product_id)
+        inventory = request.POST.get('inventory')
+        if inventory is not None:
+            product.inventory = int(inventory)
+            product.save()
+    return redirect('dashboard:products')

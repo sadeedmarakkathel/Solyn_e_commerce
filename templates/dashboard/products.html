@@ -37,9 +37,11 @@
                 <td>{{ product.category }}</td>
                 <td style="font-weight: 700;">${{ product.price }}</td>
                 <td>
-                    <span style="font-weight: 700; {% if product.inventory < 10 %}color: #E53E3E;{% endif %}">
-                        {{ product.inventory }}
-                    </span>
+                    <form action="{% url 'dashboard:update_product_stock' product.id %}" method="POST" style="display: flex; gap: 10px; align-items: center;">
+                        {% csrf_token %}
+                        <input type="number" name="inventory" value="{{ product.inventory }}" style="width: 60px; padding: 6px; border-radius: 4px; border: 1px solid #e2e8f0; font-weight: 700; {% if product.inventory < 10 %}color: #E53E3E;{% endif %}">
+                        <button type="submit" style="background: #000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Update</button>
+                    </form>
                 </td>
                 <td>
                     <span class="status-badge {% if product.inventory > 0 %}status-delivered{% else %}status-processing{% endif %}" style="background: {% if product.inventory > 0 %}#ccf6e4; color: #1a7f52;{% else %}#fed7d7; color: #c53030;{% endif %}">
